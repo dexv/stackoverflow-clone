@@ -1,0 +1,54 @@
+# Configuración usando solo un archivo yml.
+
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: stackoverflow
+  name: stackoverflow-backend-deploy
+  labels:
+    rol: backend
+spec:
+  replicas: 2
+  selector:
+    #Estas etiquetas identifican a los pods asociados a este deployment
+    matchLabels:
+      rol: backend
+  template:
+    # Este es un PodTemplate
+    metadata:
+      labels:
+        rol: backend 
+    spec:
+      containers:
+        - name: stackoverflow-backend-container
+          image: stackoverflow-backend-img
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PORT
+              valueFrom:
+                secretKeyRef:
+                  name: stackoverflow-credentials
+                  key: PORT
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: stackoverflow-credentials
+                  key: DATABASE_URL
+          ports:
+            - containerPort: 8060
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: stackoverflow
+  name: stackoverflow-backend-service
+spec:
+  ports:
+    - name: http-backend
+      port: 8060
+      targetPort: 8060 
+  selector:
+    rol: backend
+  type: ClusterIP

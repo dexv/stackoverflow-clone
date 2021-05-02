@@ -154,7 +154,7 @@ const QuestionDetail = ({ questionId, title }) => {
   )
 }
 
-export async function getServerSideProps(context) {
+export async function getStaticProps(context) {
   const slug = context.params.slug
   const questionId = slug.split('-').shift()
   const title = slug
@@ -168,6 +168,15 @@ export async function getServerSideProps(context) {
       title
     }
   }
+}
+
+export async function getStaticPaths(context) {
+  return {
+    paths: [
+      //{ params: { username: context.params.username } }
+    ],
+    fallback: false,
+  };
 }
 
 export default QuestionDetail

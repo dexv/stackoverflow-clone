@@ -58,13 +58,22 @@ const UserDetail = ({ username }) => {
   )
 }
 
-export async function getServerSideProps(context) {
+export async function getStaticProps(context) {
   const username = context.params.username
   return {
     props: {
       username
     }
   }
+}
+
+export async function getStaticPaths(context) {
+  return {
+    paths: [
+      //{ params: { username: context.params.username } }
+    ],
+    fallback: false,
+  };
 }
 
 export default UserDetail
